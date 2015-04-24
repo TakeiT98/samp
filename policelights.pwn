@@ -71,11 +71,14 @@ public OnFilterScriptExit()
     
 	for(new i=0; i<GetVehiclePoolSize(); i++)
 	{
-	    KillTimer(FlashTime[i]);
-	    
-	    GetVehicleDamageStatus(i, panels, doors, lights, tires);
-	    UpdateVehicleDamageStatus(i, panels, doors, 0, tires);
-	    Flashing[vehicleid] = 0;
+            if(Flashing[i])
+            {
+		    KillTimer(FlashTime[i]);
+		    
+		    GetVehicleDamageStatus(i, panels, doors, lights, tires);
+		    UpdateVehicleDamageStatus(i, panels, doors, 0, tires);
+		    Flashing[i] = 0;
+            }
 	}
 	return 1;
 }
