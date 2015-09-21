@@ -8,6 +8,7 @@
 
 new Flash[MAX_VEHICLES];
 new FlashTime[MAX_VEHICLES];
+new Flashing[MAX_VEHICLES];
 
 public OnFilterScriptInit()
 {
@@ -47,6 +48,7 @@ public OnVehicleSirenStateChange(playerid, vehicleid, newstate)
 	if(newstate)
 	{
 	    FlashTime[vehicleid] = SetTimerEx("OnLightFlash", flashtime, true, "d", vehicleid);
+	    Flashing[vehicleid] = 1;
 	}
 	
 	if(!newstate)
@@ -57,6 +59,8 @@ public OnVehicleSirenStateChange(playerid, vehicleid, newstate)
 	    
 		GetVehicleDamageStatus(vehicleid, panels, doors, lights, tires);
 	    UpdateVehicleDamageStatus(vehicleid, panels, doors, 0, tires);
+	    
+	        Flashing[vehicleid] = 0;
 	}
 	return 1;
 }
@@ -67,10 +71,14 @@ public OnFilterScriptExit()
     
 	for(new i=0; i<GetVehiclePoolSize(); i++)
 	{
-	    KillTimer(FlashTime[i]);
-	    
-	    GetVehicleDamageStatus(i, panels, doors, lights, tires);
-	    UpdateVehicleDamageStatus(i, panels, doors, 0, tires);
+            if(Flashing[i])
+            {
+		    KillTimer(FlashTime[i]);
+		    
+		    GetVehicleDamageStatus(i, panels, doors, lights, tires);
+		    UpdateVehicleDamageStatus(i, panels, doors, 0, tires);
+		    Flashing[i] = 0;
+            }
 	}
 	return 1;
 }
